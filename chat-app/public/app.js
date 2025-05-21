@@ -10,33 +10,84 @@ url.protocol = url.protocol.replace("http", "ws");
 const socket = new WebSocket(url);
 
 socket.onmessage = (event) => {
-  try {
-    const data = JSON.parse(event.data);
+  const data = JSON.parse(event.data);
 
-    switch (data.event) {
-      case "update-users":
-        updateUserList(data.usernames);
-        break;
-      case "send-message":
-        addMessage(data.username, data.message);
-        break;
-      default:
-        console.warn("Unknown event:", data.event);
-    }
-  } catch (e) {
-    console.error("Invalid WebSocket message:", event.data);
+  switch (data.event) {
+    case "update-users":
+      updateUserList(data.rooms);
+      break;
+
+    case "send-message":
+      addMessage(data.username, data.message);
+      break;
+
+    case "clear-chat":
+      clearChat();
+      break;
   }
 };
 
-function updateUserList(usernames) {
-  const userList = document.getElementById("users");
-  userList.replaceChildren();
+function clearChat() {
+  const chatContainer = document.getElementById("conversation");
+  chatContainer.innerHTML = "";
+}
 
-  for (const username of usernames) {
-    const listItem = document.createElement("li");
-    listItem.textContent = username;
-    userList.appendChild(listItem);
-  }
+function updateUserList(rooms) {
+  const roomListContainer = document.getElementById("room-list");
+  roomListContainer.innerHTML = "";
+  rooms.forEach((room) => {
+    const roomTitle = document.createElement("h3");
+    roomTitle.textContent = room.roomName;
+    roomTitle.style.cursor = "pointer";
+    roomTitle.addEventListener("click", () => {
+
+      if (room.members.includes(myUsername)) {
+        alert(`Kamu sudah ada di room "${room.roomName}", tidak bisa masuk lagi.`);
+        return;
+      }
+
+      if (room.roomName === "Public Room") {
+        socket.send(JSON.stringify({
+          event: "join-room",
+          roomName: room.roomName,
+          username: myUsername,
+        }));
+        return;
+      }
+
+      const password = prompt(`Masukkan password untuk masuk ke room "${room.roomName}":`);
+      if (password === null) {
+        alert(`Password Kosong`);
+        return;
+      }
+
+      socket.send(JSON.stringify({
+        event: "join-room",
+        roomName: room.roomName,
+        roomPassword: password,
+        username: myUsername,
+      }));
+    });
+
+    roomListContainer.appendChild(roomTitle);
+
+    const memberList = document.createElement("ul");
+
+    if (room.members.length === 0) {
+      const noMember = document.createElement("li");
+      noMember.textContent = "(No members)";
+      memberList.appendChild(noMember);
+    }
+    else {
+      room.members.forEach((memberName) => {
+        const memberItem = document.createElement("li");
+        memberItem.textContent = memberName;
+        memberList.appendChild(memberItem);
+      });
+    }
+
+    roomListContainer.appendChild(memberList);
+  });
 }
 
 function addMessage(username, message) {
@@ -59,6 +110,49 @@ form.onsubmit = (e) => {
   inputElement.value = "";
   socket.send(JSON.stringify({ event: "send-message", message }));
 };
+
+const createButton = document.getElementById("create-room-button");
+const formContainer = document.getElementById("create-room-form-container");
+
+createButton.addEventListener("click", () => {
+  if (formContainer.children.length > 0) return;
+
+  createButton.textContent = "Cancel";
+
+  const form = document.createElement("form");
+
+  form.innerHTML = `
+    <input type="text" id="room-name" placeholder="Room name" required />
+    <input type="password" id="room-password" placeholder="Password" required />
+    <button type="submit">Create</button>
+  `;
+
+  formContainer.appendChild(form);
+
+  form.onsubmit = (e) => {
+    e.preventDefault();
+
+    const name = document.getElementById("room-name").value;
+    const password = document.getElementById("room-password").value;
+
+    socket.send(JSON.stringify({
+      event: "create-private-room",
+      roomName: name,
+      password: password
+    }));
+
+    formContainer.innerHTML = "";
+    createButton.textContent = "Create Private Room";
+  };
+
+  createButton.onclick = () => {
+    formContainer.innerHTML = "";
+    createButton.textContent = "Create Private Room";
+
+    createButton.onclick = null;
+    createButton.addEventListener("click", arguments.callee);
+  };
+});
 
 const logoutButton = document.getElementById('logoutButton');
 

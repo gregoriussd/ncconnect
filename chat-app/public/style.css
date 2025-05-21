@@ -1,99 +1,301 @@
+/* Import Google Font */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
 body {
     display: grid;
-    grid-template-columns: 200px 1fr;
+    grid-template-columns: 250px 1fr; /* Sidebar sedikit lebih lebar */
     grid-template-rows: auto 1fr;
     height: 100vh;
     margin: 0;
     padding: 0;
-    font-family: Arial, sans-serif;
+    font-family: 'Poppins', sans-serif; /* Menggunakan Poppins */
+    background-color: #f4f7f6; /* Latar belakang utama lebih lembut */
+    color: #333; /* Warna teks default */
 }
 
 header {
     grid-column: 1 / -1;
-    height: 3rem;
-    padding: 1rem;
-    background-color: #0b0d11;
+    height: 3.5rem;
+    padding: 1rem 1.5rem;
+    background-color: #2c3e50; /* Warna header lebih gelap dan modern */
     text-align: center;
     color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Bayangan halus */
+}
 
-    & h1 {
-        margin: 0;
-    }
+header h1 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
 }
 
 aside {
-    padding: 1rem;
-
-    & h2 {
-        margin-top: 0;
-    }
-
-    & ul {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-    }
-
-    & li {
-        display: block;
-        margin-top: 1rem;
-        padding: .5rem 1rem;
-        background-color: #7AA2E3;
-        border-radius: .5rem;
-    }
+    padding: 1.5rem;
+    background-color: #ffffff;
+    border-right: 1px solid #e0e0e0;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto; /* Penting: agar sidebar bisa di-scroll jika kontennya panjang */
 }
+
+aside h2 { /* Untuk judul "List Room:" */
+    margin-top: 1.5rem; /* Beri jarak dari form create room jika muncul */
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+    color: #34495e;
+    font-weight: 500;
+}
+
+/* Styling untuk elemen list room (menggunakan div.room-item seperti saran sebelumnya) */
+/* Jika app.js Anda membuat <h3> dan <ul>, Anda perlu menyesuaikan ini atau app.js */
+/* Untuk sementara, saya akan style <li> jika itu yang dibuat app.js di dalam #room-list */
+#room-list ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    overflow-y: auto; /* Scroll jika daftar panjang */
+}
+
+#room-list li { /* Atau #room-list .room-item jika Anda mengganti elemen di JS */
+    display: block;
+    margin-top: 0.75rem;
+    padding: 0.75rem 1rem;
+    background-color: #e9ecef;
+    border-radius: 0.5rem;
+    color: #2c3e50;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+#room-list li:hover { /* Atau #room-list .room-item:hover */
+    background-color: #d3d9df;
+    transform: translateY(-2px);
+}
+
+/* Styling untuk tombol "Create Private Room" / "Cancel" */
+button#create-room-button {
+    padding: 0.75rem 1.25rem;
+    border-radius: 0.5rem;
+    border: none;
+    white-space: nowrap;
+    background-color: #007bff; /* Biru untuk aksi utama di sidebar */
+    color: white;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+    width: 100%; /* Lebar penuh */
+    margin-left: 0; /* Hapus margin kiri default dari style button umum */
+    margin-bottom: 0.5rem; /* Jarak jika form muncul di bawahnya */
+}
+
+button#create-room-button:hover {
+    background-color: #0056b3;
+}
+
+/* Styling untuk container form pembuatan room di sidebar */
+#create-room-form-container {
+    margin-top: 0.5rem; /* Sedikit jarak dari tombol "Cancel" */
+    margin-bottom: 1rem; /* Jarak sebelum "List Room:" */
+}
+
+/* Styling untuk form dinamis YANG DIBUAT OLEH app.js ANDA */
+#create-room-form-container form {
+    display: flex;           /* Aktifkan flexbox */
+    flex-direction: column;  /* Susun anak-anaknya (input, button) secara vertikal */
+    gap: 0.75rem;            /* Jarak antar elemen form (input dan tombol) */
+    padding: 0;              /* Hapus padding default dari form jika ada */
+    background-color: transparent; /* Hapus background default dari form jika ada */
+    box-shadow: none;        /* Hapus shadow default dari form jika ada */
+    align-self: initial;     /* Reset align-self dari style form umum */
+    margin: 0;               /* Reset margin dari style form umum */
+}
+
+/* Styling untuk input di dalam form pembuatan room */
+/* Target input berdasarkan ID yang dibuat di app.js Anda: #room-name dan #room-password */
+#create-room-form-container form input#room-name,
+#create-room-form-container form input#room-password {
+    width: 100%; /* Lebar penuh */
+    padding: 0.75rem 1rem;
+    border: 1px solid #ced4da;
+    border-radius: 0.5rem;
+    font-size: 0.9rem;
+    box-sizing: border-box; /* Penting agar padding tidak menambah lebar total */
+    background-color: #f8f9fa;
+    /* Hapus style input umum yang mungkin konflik jika perlu */
+    resize: none; /* Dari style input umum Anda */
+}
+
+#create-room-form-container form input#room-name:focus,
+#create-room-form-container form input#room-password:focus {
+    outline: none;
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+}
+
+/* Styling untuk tombol submit di dalam form pembuatan room */
+#create-room-form-container form button[type="submit"],
+#logoutButton {
+    width: 100%;             /* Lebar penuh */
+    margin-left: 0;          /* PENTING: Timpa margin-left dari style button umum */
+    padding: 0.75rem 1.25rem;/* Padding yang konsisten */
+    border-radius: 0.5rem;
+    border: none;
+    white-space: nowrap;
+    background-color: #5cb85c; /* Hijau untuk "Create" */
+    color: white;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: background-color 0.2s ease;
+}
+
+#create-room-form-container form button[type="submit"]:hover {
+    background-color: #4cae4c; /* Hijau lebih gelap saat hover */
+}
+
 
 main {
     display: grid;
     grid-template-rows: 1fr auto;
-    height: calc(100vh - 7rem);
-    padding: 1rem;
-    background-color: #f0f0f0;
+    padding: 1.5rem;
+    background-color: #f4f7f6;
 }
 
-form {
+/* Form utama untuk mengirim pesan */
+form#form { /* Lebih spesifik untuk form utama */
     align-self: flex-end;
     display: flex;
     align-items: stretch;
     margin: 0;
+    margin-top: 1rem;
+    background-color: #ffffff;
+    padding: 0.75rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 -2px 5px rgba(0,0,0,0.05);
 }
 
-input {
+/* Input utama untuk mengirim pesan */
+input#data { /* Lebih spesifik */
     width: 100%;
-    padding: .5rem 1rem;
-    border: 1px solid #0b0d11;
-    border-radius: .5rem;
+    padding: 0.75rem 1rem;
+    border: 1px solid #ced4da;
+    border-radius: 0.5rem;
     resize: none;
+    font-size: 0.95rem;
+    background-color: #f8f9fa;
 }
 
-button {
+input#data:focus {
+    outline: none;
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+}
+
+/* Tombol "Send" pada form utama */
+button#send { /* Lebih spesifik */
     margin-left: 1rem;
-    padding: .5rem 1rem;
-    border-radius: .5rem;
+    padding: 0.75rem 1.25rem;
+    border-radius: 0.5rem;
     border: none;
     white-space: nowrap;
-    background-color: #75fead;
-    color: #0b0d11;
+    background-color: #28a745; /* Warna hijau untuk aksi positif */
+    color: white;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+}
+
+button#send:hover {
+    background-color: #218838;
+}
+
+/* Styling umum untuk tombol lain jika ada (selain yang sudah di-override) */
+/* Style ini akan berlaku jika tidak ada style yang lebih spesifik */
+/* Saya akan buat ini kurang dominan karena banyak tombol sudah di-style spesifik */
+aside button:not(#create-room-button) {
+    /* Contoh: style minimal untuk tombol lain di aside */
+    margin-left: 1rem; /* Biarkan ini untuk tombol generik jika ada */
+    padding: .5rem 1rem;
+    border-radius: .5rem;
+    border: 1px solid #ccc;
+    white-space: nowrap;
+    background-color: #f0f0f0;
+    color: #333;
     cursor: pointer;
 }
 
-#conversation {
-    display: flex; 
-    flex-direction: column-reverse; 
-    overflow-y: scroll;
 
-    & div {
-        padding: .5rem 1rem;
-        margin-bottom: 1rem;
-        border-radius: .5rem;
-        background-color: #7AA2E3;
-        & p {
-            margin: 0;
-        }
-        & span {
-            display: block;
-            margin-bottom: .5rem;
-            font-weight: bold;
-        }
-    }
+#conversation {
+    display: flex;
+    flex-direction: column-reverse; /* Pesan baru di bawah dan scroll ke atas */
+    overflow-y: auto;
+    padding-right: 0.5rem; /* Memberi sedikit ruang untuk scrollbar */
+}
+
+#conversation div { /* Bubble chat */
+    padding: 0.75rem 1rem;
+    margin-bottom: 0.75rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    max-width: 70%;
+    word-wrap: break-word;
+}
+
+#conversation div.sent { /* Kelas untuk pesan yang dikirim oleh pengguna */
+    background-color: #dcf8c6;
+    align-self: flex-end;
+}
+
+#conversation div.received { /* Kelas untuk pesan yang diterima */
+    background-color: #ffffff;
+    align-self: flex-start;
+}
+
+#conversation div p { /* Teks pesan */
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+#conversation div span { /* Nama pengirim atau timestamp */
+    display: block;
+    margin-bottom: 0.3rem;
+    font-weight: 600;
+    font-size: 0.8rem;
+    color: #555; /* Warna default, bisa ditimpa di .sent atau .received */
+}
+
+#conversation div.sent span {
+    color: #508331; /* Warna nama pengirim untuk pesan sendiri */
+}
+
+#conversation div.received span {
+    color: #4a72ac; /* Warna nama pengirim untuk pesan diterima */
+}
+
+
+/* Scrollbar styling (opsional, tapi bisa mempercantik) */
+#conversation::-webkit-scrollbar,
+aside::-webkit-scrollbar { /* Terapkan juga ke aside */
+    width: 8px;
+}
+
+#conversation::-webkit-scrollbar-track,
+aside::-webkit-scrollbar-track {
+    background: #f4f7f6;
+    border-radius: 10px;
+}
+
+#conversation::-webkit-scrollbar-thumb,
+aside::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 10px;
+}
+
+#conversation::-webkit-scrollbar-thumb:hover,
+aside::-webkit-scrollbar-thumb:hover {
+    background: #a1a1a1;
 }
