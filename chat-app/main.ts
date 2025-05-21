@@ -18,7 +18,7 @@ app.use(router.allowedMethods());
 app.use(async (ctx, next) => {
   const path = ctx.request.url.pathname;
 
-  if (path.startsWith("/public")) {s
+  if (path.startsWith("/public")) {
     await send(ctx, path, {
       root: Deno.cwd(),
     });
