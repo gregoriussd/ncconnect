@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Register</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-tr from-slate-950 via-slate-800 to-slate-400 h-screen flex items-center justify-center">
+    <div class="bg-white rounded-2xl overflow-hidden md:h-3/4 w-11/12 md:w-3/4 lg:w-2/3 xl:w-1/2 flex flex-col-reverse md:flex-row">
+        <div class="w-full md:w-1/2 p-8">
+            <h2 class="text-2xl text-center font-bold text-gray-800 mb-4 mt-4">Create an Account</h2>
+            <form id="registForm">
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-medium mb-2">Username</label>
+                    <input type="text" name="username" placeholder="Enter username" id="username"
+                        class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none"
+                    >
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-medium mb-2">Password</label>
+                    <input type="password" name="password" placeholder="Enter password" id="password"
+                        class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none" 
+                    >
+                    <p class="block text-gray-500 text-xs">Use 8 or more characters with a mix of letters, numbers & symbols</p>
+                </div>
+                <p class="text-xs text-gray-500 mb-6">By creating an account, you agree to our<br>
+                    <a href="" class="text-black underline font-medium">Terms of use</a>
+                     and 
+                    <a href="" class="text-black underline font-medium">Privacy Policy</a>
+                </p>
+                <div class="flex justify-center">
+                    <button type="submit" id="registButton" disabled
+                        class="w-1/2 bg-gray-300 text-gray-700 rounded-full px-4 py-2 font-semibold mb-4 transition-all duration-200"
+                    >
+                        Sign Up
+                    </button>
+                </div>
+            </form>
+            <p class="text-center text-sm text-gray-500 mb-8">Already have an account? <a href="/public/login.html" class="text-black underline font-medium">Log in</a></p>
+        </div>
+        <div class="h-20 w-full md:h-auto md:w-1/2 bg-gradient-to-tr from-neutral-50 via-neutral-300 to-neutral-500 p-8 flex flex-col justify-center">
+            <img src="/public/NCConnect_logo.png" alt="NCConnect Logo" class="w-40 md:w-full mb-4">
+            <p class="text-gray-950 text-xs md:text-base hidden md:block">
+                Welcome to NCConnect!<br>
+                Please Create an Account to explore our services
+            </p>
+        </div>
+    </div>
+</body>
+
+<script>
+    const usernameInput = document.getElementById('username');
+    const passwordInput = document.getElementById('password');
+    const registButton = document.getElementById('registButton');
+
+    function updateButtonState() {
+        const username = usernameInput.value.trim();
+        const password = passwordInput.value.trim();
+
+        if (password && username) {
+            registButton.disabled = false;
+            registButton.classList.remove('bg-gray-300', 'text-gray-700');
+            registButton.classList.add('bg-black', 'text-white');
+        } else {
+            registButton.disabled = true;
+            registButton.classList.remove('bg-black', 'text-white');
+            registButton.classList.add('bg-gray-300', 'text-gray-700');
+        }
+    }
+    usernameInput.addEventListener('input', updateButtonState);
+    passwordInput.addEventListener('input', updateButtonState);
+    
+    registForm.onsubmit = async (e) => {
+    e.preventDefault();
+
+    const formData = new URLSearchParams(new FormData(registForm));
+
+    let response = await fetch('/register', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: formData
+    });
+
+    let result = await response.json(); // ini sekarang valid
+    if (result.status === "success") {
+      window.location.href = "/public/login.html";
+    } else {
+      alert(result.message);
+    }
+    alert(result.message);
+  };
+</script>
+</html>
